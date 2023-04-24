@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@prisma/client": "^4.10.1",
+    "@prisma/client": "^4.13.0",
     "@types/cors": "^2.8.13",
     "@types/node": "^18.13.0",
     "cors": "^2.8.5",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules ./src/app.ts",
-    "lint":"eslint ./src --ext .ts"
+    "lint": "eslint ./src --ext .ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

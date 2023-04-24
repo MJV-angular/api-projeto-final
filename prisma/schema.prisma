@@ -10,14 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  email     String    @unique
   name      String
   password  String
   posts     Post[]
+  cpf       String    @unique
+  dateBirth DateTime
+  picture   String?
+  address   Address?
+}
+
+model Address {
+  id       Int      @id @default(autoincrement())
+  street   String
+  number   Int
+  city     String
+  state    String
+  country  String
+  zipCode  String
+  user     User  @relation(fields:[userId], references:[id])
+  userId   Int   @unique
+
 }
 
 model Post {

@@ -1,9 +1,11 @@
 
 export interface UserRequest {
-email: string;
-name: string;
-password: string;
-
+    email: string;
+    name: string;
+    password: string;
+    cpf: string;
+    dateBirth: Date,
+    picture: string | null;
 }
 
 export interface UserResponse {

@@ -4,14 +4,24 @@ import { hash } from "bcryptjs";
 import { AppError } from "../../errors/appError";
 
 const prisma = new PrismaClient();
-const createUserServices = async (data: UserRequest) => {
-  const { email, password, name } = data;
+const createUserServices = async (data: UserRequest): Promise<Omit<UserRequest, 'password'>> => {
+  const { email, password, name, cpf, dateBirth, picture } = data;
 
   const userAlreadyExists = await prisma.user.findUnique({
     where: {
       email,
     },
   });
+
+  const cpfAlreadyExists = await prisma.user.findUnique({
+    where: {
+      cpf,
+    },
+  });
+
+  if (cpfAlreadyExists) {
+    throw new AppError("CPF já cadastrado", 403);
+  }
 
   if (userAlreadyExists) {
     throw new AppError("E-mail já cadastrado", 403);
@@ -22,10 +32,16 @@ const createUserServices = async (data: UserRequest) => {
       email: email,
       name: name,
       password: await hash(password, 10),
+      cpf: cpf,
+      dateBirth: dateBirth,
+      picture: picture,
     },
   });
 
-  return user;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: UserPassword, ...userWithoutPassword } = user;
+  return userWithoutPassword
+
 };
 
 export { createUserServices };
