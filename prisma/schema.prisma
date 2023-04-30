@@ -11,38 +11,84 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  email     String    @unique
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  email     String        @unique
   name      String
   password  String
   posts     Post[]
-  cpf       String    @unique
+  cpf       String        @unique
   dateBirth DateTime
   picture   String?
   address   Address?
+  admin     Boolean       @default(false)
+  comments  Comment[]
+  courses   UserCourses[]
+}
+
+model Courses {
+  id            Int             @id @default(autoincrement())
+  name          String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  courseContent CourseContent[]
+  User          UserCourses[]
+}
+
+model UserCourses {
+  id       Int     @id @default(autoincrement())
+  courseId Int
+  userId   Int
+  curso    Courses @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  aluno    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  text      String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+}
+
+model CourseContent {
+  id         Int          @id @default(autoincrement())
+  name       String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now())
+  courses    Courses      @relation(fields: [coursesId], references: [id])
+  coursesId  Int
+  categories Categories[]
+}
+
+model Categories {
+  id              Int           @id @default(autoincrement())
+  name            String
+  courseContent   CourseContent @relation(fields: [courseContentId], references: [id])
+  courseContentId Int
 }
 
 model Address {
-  id       Int      @id @default(autoincrement())
-  street   String
-  number   Int
-  city     String
-  state    String
-  country  String
-  zipCode  String
-  user     User  @relation(fields:[userId], references:[id])
-  userId   Int   @unique
-
+  id      Int    @id @default(autoincrement())
+  street  String
+  number  Int
+  city    String
+  state   String
+  country String
+  zipCode Int
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int    @unique
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  title     String   
-  author    User    @relation(fields: [authorId], references: [id])
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  published Boolean   @default(false)
+  title     String
+  author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
+  comments  Comment[]
 }
-

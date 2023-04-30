@@ -25,7 +25,9 @@ const createSessionService = async ({ email, password }: SessionRequest) => {
   const decoded = {
     email: user.email,
     id: user.id,
+    admin: user.admin,
   };
+
 
   const token = jwt.sign(decoded, process.env.SECRET_KEY as string, {
     expiresIn: "15h",
