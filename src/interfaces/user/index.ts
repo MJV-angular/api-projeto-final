@@ -15,7 +15,7 @@ export interface addressRequest {
     city: string;
     state: string;
     country: string;
-    zipCode: number;
+    zipCode: string;
 }
 
 export interface addressResponse {
@@ -25,7 +25,7 @@ export interface addressResponse {
     city: string;
     state: string;
     country: string;
-    zipCode: number;
+    zipCode: string;
 }
 export interface UserResponse {
     id: number;

@@ -34,7 +34,15 @@ const createSessionService = async ({ email, password }: SessionRequest) => {
     subject: "user.id",
   });
 
-  return { user, token };
+  const UserResponse = await prisma.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    include:{
+      address: true,
+    }
+  });
+  return { ...UserResponse, token };
 };
 
 export default createSessionService;

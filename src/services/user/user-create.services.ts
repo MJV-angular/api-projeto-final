@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { UserRequest, UserResponse } from "../../interfaces/user";
-import { hash } from "bcryptjs";
 import { AppError } from "../../errors/appError";
-
+import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 const createUserServices = async (data: UserRequest): Promise<UserResponse | undefined> => {
@@ -40,52 +39,41 @@ const createUserServices = async (data: UserRequest): Promise<UserResponse | und
     throw new AppError("E-mail já cadastrado", 403);
   }
 
-
-  const user = await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
-      email: email,
-      name: name,
+      email,
       password: await hash(password, 10),
-      cpf: cpf,
-      dateBirth: dateBirth,
-      picture: picture,
-    },
-  });
-
-
-  await prisma.address.create({
-    data: {
-      city: address.city,
-      country: address.country,
-      number: address.number,
-      state: address.state,
-      street: address.street,
-      zipCode: address.zipCode,
-      userId: user.id,
+      name,
+      cpf,
+      dateBirth,
+      picture,
+      address: {
+        create: {
+          city: address.city,
+          country: address.country,
+          number: address.number,
+          state: address.state,
+          street: address.street,
+          zipCode: address.zipCode,
+        }
+      }
     }
-  })
+  });
 
 
   const UserResponse = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: newUser.id,
     },
-    select: {
-      id: true,
-      name: true,
-      email: true,
+    include: {
       address: true,
-      password: false,
-      createdAt: true,
-      cpf: true,
-      dateBirth: true,
-      picture: true,
-      posts: true,
-      admin: true,
       comments: true,
+      courses: true,
+      posts: true
     },
+
   });
-  
+
   if (UserResponse)
     return UserResponse
 };
