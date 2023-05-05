@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { UserRequest, UserResponse } from "../../interfaces/user";
+import { UserRequest } from "../../interfaces/user";
 import { AppError } from "../../errors/appError";
 import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
-const createUserServices = async (data: UserRequest): Promise<UserResponse | undefined> => {
+const createUserServices = async (data: UserRequest) => {
 
-  const { email, password, name, cpf, dateBirth, picture, address } = data;
+  const { email, name, cpf, dateBirth, picture, address, admin } = data;
   const infoAddress = ['city', 'state', 'country', 'number', 'street', 'zipCode']
 
   infoAddress.forEach(value => {
@@ -42,9 +42,10 @@ const createUserServices = async (data: UserRequest): Promise<UserResponse | und
   const newUser = await prisma.user.create({
     data: {
       email,
-      password: await hash(password, 10),
+      password: await hash(data.password, 10),
       name,
       cpf,
+      admin,
       dateBirth,
       picture,
       address: {
@@ -57,25 +58,19 @@ const createUserServices = async (data: UserRequest): Promise<UserResponse | und
           zipCode: address.zipCode,
         }
       }
-    }
-  });
-
-
-  const UserResponse = await prisma.user.findUnique({
-    where: {
-      id: newUser.id,
     },
-    include: {
+    select:{
+      name: true,
+      email:true,
+      picture:true,
+      cpf:true,
+      admin: true,
+      dateBirth: true,
       address: true,
-      comments: true,
-      courses: true,
-      posts: true
     },
-
   });
 
-  if (UserResponse)
-    return UserResponse
+ return newUser
 };
 
 export { createUserServices };

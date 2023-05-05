@@ -15,15 +15,27 @@ model User {
   createdAt DateTime      @default(now())
   email     String        @unique
   name      String
-  password  String
+  password  String        
   posts     Post[]
   cpf       String        @unique
   dateBirth DateTime
   picture   String?
   address   Address?
-  admin     Boolean       @default(false)
+  admin     Boolean?      @default(false)
   comments  Comment[]
   courses   UserCourses[]
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  street  String
+  number  String
+  city    String
+  state   String
+  country String
+  zipCode String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int    @unique
 }
 
 model Courses {
@@ -47,9 +59,9 @@ model Comment {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   text      String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  Post      Post?    @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  post      Post?    @relation(fields: [postId], references: [id])
   postId    Int?
 }
 
@@ -70,17 +82,7 @@ model Categories {
   courseContentId Int
 }
 
-model Address {
-  id      Int    @id @default(autoincrement())
-  street  String
-  number  Int
-  city    String
-  state   String
-  country String
-  zipCode String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  Int    @unique
-}
+
 
 model Post {
   id        Int       @id @default(autoincrement())

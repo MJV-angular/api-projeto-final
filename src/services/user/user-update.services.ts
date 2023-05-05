@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 const updateUserService = async (Userid: string, data: UserRequest) => {
 
-  const { address, ...userData} = data;
-  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, address, ...userData } = data;
   await prisma.user.update({
     where: {
       id: Number(Userid),
@@ -16,19 +16,23 @@ const updateUserService = async (Userid: string, data: UserRequest) => {
       ...userData,
       address: {
         update: {
-          ...address,
+          ...address
         },
       },
     },
   });
 
+
   const user = await prisma.user.findUnique({
     where: { id: Number(Userid) },
     include: {
       address: true,
+      posts: true,
+      comments: true,
+      courses: true,
     },
   });
-return user
+  return user
 };
 
 export { updateUserService };

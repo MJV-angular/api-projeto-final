@@ -7,11 +7,12 @@ export interface UserRequest {
     dateBirth: Date;
     picture: string | null;
     address: addressRequest;
+    admin: boolean;
 }
 
 export interface addressRequest {
     street: string;
-    number: number;
+    number: string;
     city: string;
     state: string;
     country: string;
@@ -21,7 +22,7 @@ export interface addressRequest {
 export interface addressResponse {
     id: number;
     street: string;
-    number: number;
+    number: string;
     city: string;
     state: string;
     country: string;
@@ -35,8 +36,7 @@ export interface UserResponse {
     cpf: string;
     picture: string | null;
     admin: boolean;
-    address: addressResponse | null
-    comments: Comment[]
+    address: addressResponse
 }
 
 
