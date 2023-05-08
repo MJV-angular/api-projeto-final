@@ -1,6 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +14,7 @@ model User {
   createdAt DateTime      @default(now())
   email     String        @unique
   name      String
-  password  String        
+  password  String
   posts     Post[]
   cpf       String        @unique
   dateBirth DateTime
@@ -38,9 +37,10 @@ model Address {
   userId  Int    @unique
 }
 
-model Courses {
+model Course {
   id            Int             @id @default(autoincrement())
   name          String
+  image         String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
   courseContent CourseContent[]
@@ -51,7 +51,7 @@ model UserCourses {
   id       Int     @id @default(autoincrement())
   courseId Int
   userId   Int
-  curso    Courses @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  curso    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   aluno    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -67,12 +67,14 @@ model Comment {
 
 model CourseContent {
   id         Int          @id @default(autoincrement())
-  name       String
+  title      String
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @default(now())
-  courses    Courses      @relation(fields: [coursesId], references: [id])
-  coursesId  Int
+  course     Course       @relation(fields: [courseId], references: [id])
+  courseId   Int
   categories Categories[]
+  video_url  String
+  text       String
 }
 
 model Categories {
@@ -81,8 +83,6 @@ model Categories {
   courseContent   CourseContent @relation(fields: [courseContentId], references: [id])
   courseContentId Int
 }
-
-
 
 model Post {
   id        Int       @id @default(autoincrement())

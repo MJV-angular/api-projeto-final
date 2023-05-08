@@ -12,6 +12,7 @@
     "yup": "^1.0.2"
   },
   "scripts": {
+    "vercel-build": "prisma generate",
     "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules ./src/app.ts",
     "lint": "eslint ./src --ext .ts"
   },

@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { UserRequest } from "../../interfaces/user";
 import { AppError } from "../../errors/appError";
 import { hash } from "bcryptjs";
+
 const prisma = new PrismaClient();
 
 const createUserServices = async (data: UserRequest) => {
@@ -67,8 +68,14 @@ const createUserServices = async (data: UserRequest) => {
       admin: true,
       dateBirth: true,
       address: true,
+      comments: true,
+      courses: true,
+      posts: true,
+      id: true,
+      createdAt: true,
     },
   });
+  
 
  return newUser
 };

@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { SessionRequest } from "../../interfaces/session";
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
-const prisma = new PrismaClient();
 import "dotenv/config";
 import { AppError } from "../../errors/appError";
+const prisma = new PrismaClient();
 
 const createSessionService = async ({ email, password }: SessionRequest) => {
   const user = await prisma.user.findUnique({
@@ -38,8 +38,20 @@ const createSessionService = async ({ email, password }: SessionRequest) => {
     where: {
       id: user.id,
     },
-    include:{
+    select:{
+      password: false,
       address: true,
+      courses: true,
+      comments: true,
+      posts: true,
+      admin: true,
+      cpf: true,
+      createdAt: true,
+      dateBirth: true,
+      email: true,
+      id: true,
+      name:true,
+      picture: true
     }
   });
   return { ...UserResponse, token };
